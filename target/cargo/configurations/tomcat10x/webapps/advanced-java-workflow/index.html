@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI & Digital Twin Workflow Control Panel</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background: #0f172a; 
+            color: #f8fafc; 
+            margin: 0; 
+            padding: 2rem; 
+        }
+        .container { 
+            max-width: 1050px; 
+            margin: auto; 
+            display: grid; 
+            grid-template-columns: 1fr 1.2fr; 
+            gap: 2rem; 
+        }
+        .card { 
+            background: #1e293b; 
+            border-radius: 10px; 
+            padding: 1.5rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.5); 
+            height: fit-content;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+        h2 { 
+            margin-top: 0; 
+            border-bottom: 1px solid #334155; 
+            padding-bottom: 0.5rem; 
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .metric { 
+            display: flex; 
+            justify-content: space-between; 
+            margin: 0.75rem 0; 
+            font-size: 1.05rem; 
+        }
+        .metric-val { 
+            font-weight: 600; 
+            color: #38bdf8; 
+        }
+        .status-OPTIMAL { color: #4ade80; font-weight: bold; }
+        .status-WARNING { color: #facc15; font-weight: bold; }
+        .status-CRITICAL { color: #f87171; font-weight: bold; }
+        .status-ACTION_REQUIRED { color: #f87171; font-weight: bold; }
+        .status-IN_PROGRESS { color: #38bdf8; font-weight: bold; }
+        .primary-btn { 
+            background: #2563eb; 
+            color: #fff; 
+            border: none; 
+            padding: 0.7rem 1.4rem; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            margin-top: 1.2rem; 
+            font-weight: 600;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .primary-btn:hover { background: #1d4ed8; }
+        .resolve-btn {
+            background: #059669;
+            color: #fff;
+            border: none;
+            padding: 0.4rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .resolve-btn:hover { background: #047857; }
+        .task-container {
+            max-height: 480px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+        ul { list-style: none; padding: 0; margin: 0; }
+        li { 
+            background: #334155; 
+            margin: 0.6rem 0; 
+            padding: 0.85rem; 
+            border-radius: 6px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        li div { flex: 1; }
+    </style>
+</head>
+<body>
+    <h1>Digital Twin & Automated Workflow Operations</h1>
+    <div class="container">
+        <div class="card">
+            <h2>Digital Twin Telemetry</h2>
+            <div class="metric"><span>Machine ID:</span> <span class="metric-val" id="m-id">--</span></div>
+            <div class="metric"><span>Temperature:</span> <span class="metric-val" id="m-temp">--</span></div>
+            <div class="metric"><span>Vibration:</span> <span class="metric-val" id="m-vib">--</span></div>
+            <div class="metric"><span>Spindle Speed:</span> <span class="metric-val" id="m-rpm">--</span></div>
+            <div class="metric"><span>Asset Health:</span> <span class="metric-val" id="m-health">--</span></div>
+            <div class="metric"><span>Twin Status:</span> <span id="m-status">--</span></div>
+            <button class="primary-btn" onclick="pollTelemetry()">Simulate Real-time Reading</button>
+        </div>
+        <div class="card">
+            <h2>
+                <span>Active Workflow Tasks</span>
+                <span id="task-count" style="font-size: 0.9rem; color: #94a3b8;">0 tasks</span>
+            </h2>
+            <div class="task-container">
+                <ul id="task-list">Loading tasks...</ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function resolveTask(id) {
+            try {
+                const res = await fetch(`/advanced-java-workflow/api/tasks?id=${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    await loadTasks();
+                }
+            } catch (err) {
+                console.error('Failed to resolve task:', err);
+            }
+        }
+
+        async function loadTasks() {
+            const list = document.getElementById('task-list');
+            const countEl = document.getElementById('task-count');
+            try {
+                const res = await fetch('/advanced-java-workflow/api/tasks');
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const tasks = await res.json();
+                
+                countEl.innerText = `${tasks.length} task${tasks.length === 1 ? '' : 's'}`;
+
+                if (!tasks || tasks.length === 0) {
+                    list.innerHTML = '<li><em>No active tasks found in database.</em></li>';
+                    return;
+                }
+
+                list.innerHTML = tasks.slice().reverse().map(t => `
+                    <li>
+                        <div>
+                            <strong>${t.title}</strong><br>
+                            <small style="color: #94a3b8;">${t.description || 'No description provided'}</small><br>
+                            <span style="display:inline-block; margin-top:4px; font-size:0.85rem;" class="status-${t.status}">[${t.status}]</span>
+                        </div>
+                        <button class="resolve-btn" onclick="resolveTask(${t.id})">Resolve</button>
+                    </li>
+                `).join('');
+            } catch (err) {
+                console.error('Failed to load tasks:', err);
+                list.innerHTML = `<li style="color: #f87171;">Failed to load tasks from API: ${err.message}</li>`;
+            }
+        }
+
+        async function pollTelemetry() {
+            try {
+                const res = await fetch('/advanced-java-workflow/api/digital-twin/telemetry?machineId=TWIN-CNC-01');
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                
+                document.getElementById('m-id').innerText = data.machineId;
+                document.getElementById('m-temp').innerText = data.temperature + ' °C';
+                document.getElementById('m-vib').innerText = data.vibration + ' mm/s';
+                document.getElementById('m-rpm').innerText = data.rpm + ' RPM';
+                document.getElementById('m-health').innerText = data.healthScore + ' %';
+                
+                const statusEl = document.getElementById('m-status');
+                statusEl.innerText = data.status;
+                statusEl.className = 'status-' + data.status;
+
+                await loadTasks();
+            } catch (err) {
+                console.error('Failed to fetch telemetry:', err);
+            }
+        }
+
+        pollTelemetry();
+        setInterval(pollTelemetry, 3000);
+    </script>
+</body>
+</html>
