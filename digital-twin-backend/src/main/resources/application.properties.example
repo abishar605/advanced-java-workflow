@@ -1,0 +1,19 @@
+# Digital Twin - Database Configuration
+
+spring.application.name=digital-twin-backend
+
+# MySQL Database
+spring.datasource.url=jdbc:mysql://localhost:3306/digital_twin_db?useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true
+spring.datasource.username=root
+spring.datasource.password=YOUR_MYSQL_PASSWORD
+
+# JDBC Driver
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# JPA / Hibernate
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# Server
+server.port=8080

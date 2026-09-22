@@ -1,0 +1,7 @@
+com\workflow\dao\TaskDAO.class
+com\workflow\controller\DigitalTwinServlet.class
+com\workflow\util\DatabaseConnection.class
+com\workflow\controller\TaskServlet.class
+com\workflow\model\Task.class
+com\workflow\model\MachineTelemetry.class
+com\workflow\service\DigitalTwinEngine.class
