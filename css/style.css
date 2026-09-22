@@ -1,0 +1,391 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #172033;
+}
+
+
+/* ================= LOGIN ================= */
+
+.login-page {
+
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eaf2ff,
+            #f7f9fc
+        );
+}
+
+
+.login-container {
+
+    width: 420px;
+
+    background: white;
+
+    padding: 35px;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 10px 35px
+        rgba(0,0,0,0.12);
+
+    text-align: center;
+}
+
+
+.login-logo {
+
+    width: 65px;
+
+    height: 65px;
+
+    margin: auto;
+
+    margin-bottom: 20px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background: #2563eb;
+
+    color: white;
+
+    border-radius: 12px;
+
+    font-size: 24px;
+
+    font-weight: bold;
+}
+
+
+.login-subtitle {
+
+    color: #667085;
+
+    margin-bottom: 30px;
+}
+
+
+.demo-login {
+
+    margin-top: 25px;
+
+    padding: 12px;
+
+    background: #f5f7fa;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    color: #667085;
+}
+
+
+
+/* ================= SIDEBAR ================= */
+
+.sidebar {
+
+    position: fixed;
+
+    top: 56px;
+
+    left: 0;
+
+    bottom: 0;
+
+    width: 230px;
+
+    background: #172033;
+
+    padding: 20px;
+}
+
+
+.sidebar-btn {
+
+    width: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    color: #cbd5e1;
+
+    text-align: left;
+
+    padding: 13px;
+
+    margin-bottom: 8px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+
+.sidebar-btn:hover,
+
+.sidebar-btn.active {
+
+    background: #293956;
+
+    color: white;
+}
+
+
+
+/* ================= MAIN ================= */
+
+.main-content {
+
+    margin-left: 230px;
+
+    padding: 30px;
+}
+
+
+.page-header {
+
+    margin-bottom: 25px;
+}
+
+
+.page-header h1 {
+
+    font-weight: 700;
+
+    margin-bottom: 5px;
+}
+
+
+.page-header p {
+
+    color: #667085;
+}
+
+
+
+/* ================= CARDS ================= */
+
+.stat-card {
+
+    background: white;
+
+    padding: 22px;
+
+    border-radius: 12px;
+
+    border: 1px solid #e5e7eb;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.05);
+}
+
+
+.stat-card h6 {
+
+    color: #667085;
+
+    margin-bottom: 8px;
+}
+
+
+.stat-card h2 {
+
+    font-weight: bold;
+
+    margin: 0;
+}
+
+
+.content-card {
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 12px;
+
+    border: 1px solid #e5e7eb;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.05);
+}
+
+
+
+/* ================= MACHINE ================= */
+
+.machine-card {
+
+    background: white;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    border: 1px solid #e5e7eb;
+
+    height: 100%;
+}
+
+
+.machine-code {
+
+    color: #667085;
+
+    font-size: 13px;
+}
+
+
+.machine-name {
+
+    font-size: 19px;
+
+    font-weight: bold;
+
+    margin-top: 5px;
+}
+
+
+.status {
+
+    display: inline-block;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+
+.status-running {
+
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+
+.status-idle {
+
+    background: #fef3c7;
+
+    color: #92400e;
+}
+
+
+.status-maintenance {
+
+    background: #fee2e2;
+
+    color: #991b1b;
+}
+
+
+.status-offline {
+
+    background: #e5e7eb;
+
+    color: #374151;
+}
+
+
+
+/* ================= CHART ================= */
+
+.chart-card {
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 12px;
+
+    border: 1px solid #e5e7eb;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.05);
+}
+
+
+.chart-card h4 {
+
+    margin-bottom: 20px;
+}
+
+
+
+/* ================= PAGE CONTROL ================= */
+
+.hidden-page {
+
+    display: none;
+}
+
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+
+    .sidebar {
+
+        position: static;
+
+        width: 100%;
+
+        display: flex;
+
+        overflow-x: auto;
+
+        padding: 10px;
+
+    }
+
+
+    .sidebar-btn {
+
+        min-width: 160px;
+
+        margin-right: 5px;
+
+    }
+
+
+    .main-content {
+
+        margin-left: 0;
+
+        padding: 15px;
+
+    }
+
+}
