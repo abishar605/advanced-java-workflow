@@ -357,109 +357,81 @@ function displayMachineTable() {
 
 /* ================= DIGITAL TWIN ================= */
 
-async function viewDigitalTwin(
-    machineId
-) {
+async function viewDigitalTwin(machineId) {
 
     try {
 
-        const data =
+        // Get machine information and machine code
+        const machineData =
             await apiRequest(
                 "/dashboard/" + machineId
             );
 
+        // Run Member 2 Digital Twin prediction
+        const prediction =
+            await apiRequest(
+                "/digital-twin/predict/" +
+                machineData.machineCode
+            );
 
         alert(
-
-            "DIGITAL TWIN\n\n" +
+            "DIGITAL TWIN PREDICTION\n\n" +
 
             "Machine: " +
-            data.machineCode +
-
+            prediction.machineCode +
             "\n" +
-            data.machineName +
 
-            "\n\n" +
-
-            "Machine Type: " +
-            data.machineType +
-
-            "\n\n" +
-
-            "Location: " +
-            data.location +
-
-            "\n\n" +
-
-            "Operational Status: " +
-            data.operationalStatus +
-
-            "\n\n" +
-
-            "Health Status: " +
-            data.status +
-
-            "\n\n" +
-
-            "Health Score: " +
-            data.healthScore +
-
-            "%\n\n" +
-
-            "Anomaly Detected: " +
-            (data.anomalyDetected ? "YES" : "NO") +
-
+            prediction.machineName +
             "\n\n" +
 
             "Temperature: " +
-            data.temperature +
-
+            prediction.temperature +
             " °C\n\n" +
 
             "Vibration: " +
-            data.vibration +
+            prediction.vibration +
+            " mm/s\n\n" +
 
+            "RPM: " +
+            prediction.rpm +
             "\n\n" +
 
-            "Speed: " +
-            data.speedRpm +
+            "Health Score: " +
+            prediction.healthScore +
+            "%\n\n" +
 
-            " RPM\n\n" +
-
-            "Energy Consumption: " +
-            data.energyConsumption +
-
+            "Status: " +
+            prediction.status +
             "\n\n" +
 
-            "Units Produced: " +
-            data.unitsProduced +
-
+            "DM-TVC Coupling Factor: " +
+            prediction.harmonicCouplingFactor +
             "\n\n" +
 
-            "Defective Units: " +
-            data.defectiveUnits +
-
+            "Degradation Velocity: " +
+            prediction.degradationVelocity +
             "\n\n" +
 
-            "Production Rate: " +
-            data.productionRate
-
+            "Estimated Cycles to Failure: " +
+            prediction.estimatedCyclesToFailure
         );
 
     }
 
     catch (error) {
 
-        console.error(error);
+        console.error(
+            "Digital Twin prediction error:",
+            error
+        );
 
         alert(
-            "Unable to load Digital Twin data."
+            "Unable to load Digital Twin prediction."
         );
 
     }
 
 }
-
 
 /* ================= REPORT MACHINE ================= */
 
