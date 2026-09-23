@@ -3,34 +3,21 @@ let machines = [];
 let charts = {};
 
 
-
 /* ================= START ================= */
 
 document.addEventListener(
     "DOMContentLoaded",
     function() {
 
-        const token =
-            localStorage.getItem(
-                "dt_token"
-            );
+        const user = getUser();
 
-
-        if (!token) {
-
+        if (!user) {
             window.location.href =
                 "login.html";
-
             return;
         }
 
-
-        const user =
-            getUser();
-
-
         if (user) {
-
             document.getElementById(
                 "loggedUser"
             ).innerText =
@@ -38,15 +25,12 @@ document.addEventListener(
                 " (" +
                 user.role +
                 ")";
-
         }
-
 
         loadMachines();
 
     }
 );
-
 
 
 /* ================= PAGE NAVIGATION ================= */
@@ -64,11 +48,9 @@ function showPage(
 
     pages.forEach(
         page => {
-
             page.classList.add(
                 "hidden-page"
             );
-
         }
     );
 
@@ -84,11 +66,9 @@ function showPage(
         ".sidebar-btn"
     ).forEach(
         btn => {
-
             btn.classList.remove(
                 "active"
             );
-
         }
     );
 
@@ -99,27 +79,20 @@ function showPage(
 
 
     if (pageId === "machinesPage") {
-
         displayMachineTable();
-
     }
 
 
     if (pageId === "reportsPage") {
-
         prepareReportMachines();
-
     }
 
 
     if (pageId === "chartsPage") {
-
         prepareChartMachines();
-
     }
 
 }
-
 
 
 /* ================= LOAD MACHINES ================= */
@@ -162,7 +135,6 @@ async function loadMachines() {
     }
 
 }
-
 
 
 /* ================= DASHBOARD ================= */
@@ -215,7 +187,6 @@ function updateDashboard() {
 }
 
 
-
 /* ================= MACHINE CARDS ================= */
 
 function displayMachineCards() {
@@ -257,32 +228,24 @@ function displayMachineCards() {
                     <div class="machine-card">
 
                         <div class="machine-code">
-
                             ${machine.machineCode}
-
                         </div>
 
 
                         <div class="machine-name">
-
-                            ${machine.name}
-
+                            ${machine.machineName}
                         </div>
 
 
                         <p class="mt-2">
-
-                            Model:
-                            ${machine.model || "-"}
-
+                            Type:
+                            ${machine.machineType || "-"}
                         </p>
 
 
                         <p>
-
                             Location:
                             ${machine.location || "-"}
-
                         </p>
 
 
@@ -299,7 +262,7 @@ function displayMachineCards() {
 
                         <button
                             class="btn btn-primary btn-sm mt-3"
-                            onclick="viewDigitalTwin(${machine.id})">
+                            onclick="viewDigitalTwin(${machine.machineId})">
 
                             View Digital Twin
 
@@ -315,7 +278,6 @@ function displayMachineCards() {
     );
 
 }
-
 
 
 /* ================= MACHINE TABLE ================= */
@@ -349,11 +311,11 @@ function displayMachineTable() {
                     </td>
 
                     <td>
-                        ${machine.name}
+                        ${machine.machineName}
                     </td>
 
                     <td>
-                        ${machine.model || "-"}
+                        ${machine.machineType || "-"}
                     </td>
 
                     <td>
@@ -375,7 +337,7 @@ function displayMachineTable() {
 
                         <button
                             class="btn btn-primary btn-sm"
-                            onclick="viewDigitalTwin(${machine.id})">
+                            onclick="viewDigitalTwin(${machine.machineId})">
 
                             View
 
@@ -393,7 +355,6 @@ function displayMachineTable() {
 }
 
 
-
 /* ================= DIGITAL TWIN ================= */
 
 async function viewDigitalTwin(
@@ -404,7 +365,7 @@ async function viewDigitalTwin(
 
         const data =
             await apiRequest(
-                "/twins/" + machineId
+                "/dashboard/" + machineId
             );
 
 
@@ -414,40 +375,82 @@ async function viewDigitalTwin(
 
             "Machine: " +
             data.machineCode +
+
+            "\n" +
+            data.machineName +
+
+            "\n\n" +
+
+            "Machine Type: " +
+            data.machineType +
+
+            "\n\n" +
+
+            "Location: " +
+            data.location +
+
+            "\n\n" +
+
+            "Operational Status: " +
+            data.operationalStatus +
+
+            "\n\n" +
+
+            "Health Status: " +
+            data.status +
+
             "\n\n" +
 
             "Health Score: " +
             data.healthScore +
+
             "%\n\n" +
+
+            "Anomaly Detected: " +
+            (data.anomalyDetected ? "YES" : "NO") +
+
+            "\n\n" +
 
             "Temperature: " +
             data.temperature +
+
             " °C\n\n" +
 
             "Vibration: " +
             data.vibration +
+
             "\n\n" +
+
+            "Speed: " +
+            data.speedRpm +
+
+            " RPM\n\n" +
 
             "Energy Consumption: " +
             data.energyConsumption +
+
+            "\n\n" +
+
+            "Units Produced: " +
+            data.unitsProduced +
+
+            "\n\n" +
+
+            "Defective Units: " +
+            data.defectiveUnits +
+
             "\n\n" +
 
             "Production Rate: " +
-            data.productionRate +
-            "\n\n" +
-
-            "Efficiency: " +
-            data.calculatedEfficiencyPercent +
-            "%\n\n" +
-
-            "Prediction: " +
-            data.prediction
+            data.productionRate
 
         );
 
     }
 
     catch (error) {
+
+        console.error(error);
 
         alert(
             "Unable to load Digital Twin data."
@@ -456,7 +459,6 @@ async function viewDigitalTwin(
     }
 
 }
-
 
 
 /* ================= REPORT MACHINE ================= */
@@ -471,7 +473,9 @@ function prepareReportMachines() {
 
     select.innerHTML =
         `<option value="">
+
             Select Machine
+
         </option>`;
 
 
@@ -481,11 +485,13 @@ function prepareReportMachines() {
             select.innerHTML += `
 
                 <option
-                    value="${machine.id}">
+                    value="${machine.machineId}">
 
                     ${machine.machineCode}
+
                     -
-                    ${machine.name}
+
+                    ${machine.machineName}
 
                 </option>
 
@@ -495,7 +501,6 @@ function prepareReportMachines() {
     );
 
 }
-
 
 
 /* ================= REPORT ================= */
@@ -509,9 +514,7 @@ async function loadReport() {
 
 
     if (!machineId) {
-
         return;
-
     }
 
 
@@ -519,7 +522,7 @@ async function loadReport() {
 
         const readings =
             await apiRequest(
-                "/sensors/machine/" +
+                "/sensor-readings/machine/" +
                 machineId
             );
 
@@ -541,26 +544,37 @@ async function loadReport() {
                     <tr>
 
                         <td>
+
                             ${new Date(
                                 reading.recordedAt
                             ).toLocaleString()}
+
                         </td>
 
                         <td>
+
                             ${reading.temperature}
+
                             °C
+
                         </td>
 
                         <td>
+
                             ${reading.vibration}
+
                         </td>
 
                         <td>
+
                             ${reading.energyConsumption}
+
                         </td>
 
                         <td>
+
                             ${reading.productionRate}
+
                         </td>
 
                     </tr>
@@ -574,6 +588,8 @@ async function loadReport() {
 
     catch (error) {
 
+        console.error(error);
+
         alert(
             "Unable to load report."
         );
@@ -581,7 +597,6 @@ async function loadReport() {
     }
 
 }
-
 
 
 /* ================= CHART MACHINES ================= */
@@ -596,7 +611,9 @@ function prepareChartMachines() {
 
     select.innerHTML =
         `<option value="">
+
             Select Machine
+
         </option>`;
 
 
@@ -606,11 +623,13 @@ function prepareChartMachines() {
             select.innerHTML += `
 
                 <option
-                    value="${machine.id}">
+                    value="${machine.machineId}">
 
                     ${machine.machineCode}
+
                     -
-                    ${machine.name}
+
+                    ${machine.machineName}
 
                 </option>
 
@@ -620,7 +639,6 @@ function prepareChartMachines() {
     );
 
 }
-
 
 
 /* ================= LOAD CHARTS ================= */
@@ -634,9 +652,7 @@ async function loadCharts() {
 
 
     if (!machineId) {
-
         return;
-
     }
 
 
@@ -644,7 +660,7 @@ async function loadCharts() {
 
         const readings =
             await apiRequest(
-                "/sensors/machine/" +
+                "/sensor-readings/machine/" +
                 machineId
             );
 
@@ -705,6 +721,8 @@ async function loadCharts() {
 
     catch (error) {
 
+        console.error(error);
+
         alert(
             "Unable to load chart data."
         );
@@ -712,7 +730,6 @@ async function loadCharts() {
     }
 
 }
-
 
 
 /* ================= CREATE CHART ================= */
@@ -785,10 +802,10 @@ function createChart(
                 }
 
             }
+
         );
 
 }
-
 
 
 /* ================= AUTO REFRESH ================= */

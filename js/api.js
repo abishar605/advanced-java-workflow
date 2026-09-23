@@ -3,32 +3,17 @@ const API_BASE = "http://localhost:8080/api";
 
 async function apiRequest(url, options = {}) {
 
-    const token =
-        localStorage.getItem("dt_token");
-
-
     const headers = {
-
         "Content-Type": "application/json",
-
         ...(options.headers || {})
-
     };
-
-
-    if (token) {
-
-        headers["Authorization"] =
-            "Bearer " + token;
-
-    }
-
 
     const response = await fetch(
         API_BASE + url,
         {
             ...options,
-            headers: headers
+            headers: headers,
+            credentials: "include"
         }
     );
 
@@ -38,7 +23,7 @@ async function apiRequest(url, options = {}) {
         response.status === 403
     ) {
 
-        localStorage.clear();
+        localStorage.removeItem("dt_user");
 
         window.location.href =
             "login.html";
@@ -80,6 +65,8 @@ async function loginUser(
                     "application/json"
             },
 
+            credentials: "include",
+
             body: JSON.stringify({
 
                 username: username,
@@ -106,12 +93,6 @@ async function loginUser(
 
 
     localStorage.setItem(
-        "dt_token",
-        data.token
-    );
-
-
-    localStorage.setItem(
         "dt_user",
         JSON.stringify(data)
     );
@@ -126,7 +107,7 @@ async function loginUser(
 
 function logout() {
 
-    localStorage.clear();
+    localStorage.removeItem("dt_user");
 
     window.location.href =
         "login.html";
