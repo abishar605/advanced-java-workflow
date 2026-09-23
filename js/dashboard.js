@@ -147,19 +147,19 @@ function updateDashboard() {
 
     const running =
         machines.filter(
-            m => m.status === "RUNNING"
+            m => m.operationalStatus === "RUNNING"
         ).length;
 
 
     const maintenance =
         machines.filter(
-            m => m.status === "MAINTENANCE"
+            m => m.operationalStatus === "MAINTENANCE"
         ).length;
 
 
     const offline =
         machines.filter(
-            m => m.status === "OFFLINE"
+            m => m.operationalStatus === "OFFLINE"
         ).length;
 
 
@@ -217,7 +217,7 @@ function displayMachineCards() {
 
             const status =
                 String(
-                    machine.status || ""
+                    machine.operationalStatus || ""
                 ).toLowerCase();
 
 
@@ -252,7 +252,7 @@ function displayMachineCards() {
                         <span
                             class="status status-${status}">
 
-                            ${machine.status}
+                            ${machine.operationalStatus}
 
                         </span>
 
@@ -298,7 +298,7 @@ function displayMachineTable() {
 
             const status =
                 String(
-                    machine.status || ""
+                    machine.operationalStatus || ""
                 ).toLowerCase();
 
 
@@ -327,7 +327,7 @@ function displayMachineTable() {
                         <span
                             class="status status-${status}">
 
-                            ${machine.status}
+                            ${machine.operationalStatus}
 
                         </span>
 
@@ -546,7 +546,7 @@ async function loadReport() {
                         <td>
 
                             ${new Date(
-                                reading.recordedAt
+                                reading.readingTime
                             ).toLocaleString()}
 
                         </td>
@@ -573,7 +573,7 @@ async function loadReport() {
 
                         <td>
 
-                            ${reading.productionRate}
+                            ${reading.speedRpm}
 
                         </td>
 
@@ -673,7 +673,7 @@ async function loadCharts() {
             ordered.map(
                 r =>
                     new Date(
-                        r.recordedAt
+                        r.readingTime
                     ).toLocaleTimeString()
             );
 
@@ -710,10 +710,10 @@ async function loadCharts() {
 
         createChart(
             "productionChart",
-            "Production Rate",
+            "Speed (RPM)",
             labels,
             ordered.map(
-                r => r.productionRate
+                r => r.speedRpm
             )
         );
 
