@@ -666,7 +666,7 @@ async function loadCharts() {
 
 
         const ordered =
-            [...readings].reverse();
+            [...readings];
 
 
         const labels =
