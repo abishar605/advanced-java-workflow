@@ -389,3 +389,16 @@ body {
     }
 
 }
+
+/* ================= CHART SIZE FIX ================= */
+
+.chart-card {
+    height: 380px;
+    overflow: hidden;
+}
+
+.chart-card canvas {
+    display: block;
+    width: 100% !important;
+    height: 280px !important;
+}
